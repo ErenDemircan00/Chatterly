@@ -165,6 +165,16 @@ function LoginRegisterPage() {
         )}
       </p>
 
+      <p style={{ marginTop: "10px" }}>
+        <span
+          style={{ color: "blue", cursor: "pointer" }}
+          onClick={() => navigate("/forgot-password")}
+        >
+          Şifremi Unuttum
+        </span>
+      </p>
+
+
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>
   );
