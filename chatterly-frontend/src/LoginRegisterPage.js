@@ -49,13 +49,13 @@ function LoginRegisterPage() {
   const provider = new GoogleAuthProvider();
 
   const checkUsernameExists = async (username) => {
-    const q = query(collection(db, "users"), where("username", "==", username));
-    const snapshot = await getDocs(q);
-    return !snapshot.empty;
+    const docRef = doc(db, "users", username);
+    const docSnap = await getDoc(docRef);
+    return docSnap.exists();
   };
 
   const handleRegister = async () => {
-    setError(""); // Önce hatayı temizle
+    setError("");
     if (!username || !email || !password) {
       setError("Tüm alanları doldurun.");
       return;
@@ -71,43 +71,58 @@ function LoginRegisterPage() {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
 
-      await setDoc(doc(db, "users", user.uid), {
-        username: username,
-        email: email,
+      // username doküman ID olarak kullanılıyor:
+      await setDoc(doc(db, "users", username), {
+        uid: user.uid,  // uid'yi de kayıt edelim
+        username,
+        email,
+        displayName: '',
+        bio: '',
+        photoURL: '',
       });
 
       await signOut(auth);
-      setIsRegister(false); // Giriş moduna geç
+      setIsRegister(false);
       setEmail("");
       setPassword("");
       setUsername("");
+      alert("Kayıt başarılı, giriş yapabilirsiniz.");
     } catch (err) {
       setError(getErrorMessage(err.code));
     }
   };
 
   const handleLogin = async () => {
-    setError(""); // Önce hatayı temizle
+    setError("");
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate("/"); // Giriş başarılıysa anasayfaya yönlendir
+      navigate("/");
     } catch (err) {
       setError(getErrorMessage(err.code));
     }
   };
 
   const handleGoogleLogin = async () => {
-    setError(""); // Önce hatayı temizle
+    setError("");
     try {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      const ref = doc(db, "users", user.uid);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) {
-        await setDoc(ref, {
-          username: user.displayName || "unknown",
+      // Google ile gelen kullanıcı username alanı olmadığı için 
+      // kullanıcı adı olarak email öncesi kısım kullanabiliriz:
+      const usernameFromEmail = user.email.split("@")[0];
+
+      const docRef = doc(db, "users", usernameFromEmail);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        await setDoc(docRef, {
+          uid: user.uid,
+          username: usernameFromEmail,
           email: user.email,
+          displayName: user.displayName || '',
+          bio: '',
+          photoURL: user.photoURL || '',
         });
       }
 
@@ -173,7 +188,6 @@ function LoginRegisterPage() {
           Şifremi Unuttum
         </span>
       </p>
-
 
       {error && <p style={{ color: "red" }}>{error}</p>}
     </div>

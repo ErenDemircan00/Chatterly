@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import LoginRegisterPage from "./LoginRegisterPage";
@@ -7,7 +6,6 @@ import ForgotPasswordPage from "./ForgotPasswordPage";
 import ProfilePage from "./ProfilePage";
 import Navbar from "./Navbar";
 
-// Navbar'ın bazı sayfalarda görünmemesi için wrapper component
 const LayoutWithNavbar = ({ children }) => {
   const location = useLocation();
   const hideNavbarRoutes = ["/login", "/forgot-password"];

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db, storage } from './firebase';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, query, collection, where, getDocs } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
 
@@ -13,20 +13,32 @@ const ProfileForm = ({ onClose }) => {
   const [photoFile, setPhotoFile] = useState(null);
   const [photoURL, setPhotoURL] = useState('');
   const [previewURL, setPreviewURL] = useState('');
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         setUser(firebaseUser);
-        const docRef = doc(db, 'users', firebaseUser.uid);
-        const docSnap = await getDoc(docRef);
-        if (docSnap.exists()) {
-          const data = docSnap.data();
+
+        // uid'den username bulmak için sorgu
+        const usersRef = collection(db, "users");
+        const q = query(usersRef, where("uid", "==", firebaseUser.uid));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          const data = querySnapshot.docs[0].data();
           setDisplayName(data.displayName || '');
           setUsername(data.username || '');
           setBio(data.bio || '');
           setPhotoURL(data.photoURL || '');
         }
+      } else {
+        setUser(null);
+        setDisplayName('');
+        setUsername('');
+        setBio('');
+        setPhotoURL('');
+        setPreviewURL('');
       }
     });
 
@@ -64,18 +76,21 @@ const ProfileForm = ({ onClose }) => {
       return;
     }
 
+    setLoading(true);
     try {
       const uploadedPhotoURL = await handlePhotoUpload();
       const finalPhotoURL = uploadedPhotoURL || photoURL;
 
+      // Güncellemede username doküman ID olarak kullanılıyor:
       await setDoc(
-        doc(db, 'users', user.uid),
+        doc(db, 'users', username),
         {
           displayName,
           username,
           bio,
           photoURL: finalPhotoURL,
           email: user.email,
+          uid: user.uid,
         },
         { merge: true }
       );
@@ -87,6 +102,7 @@ const ProfileForm = ({ onClose }) => {
       console.error('Profil kaydı hatası:', error);
       alert('Profil güncellenemedi: ' + error.message);
     }
+    setLoading(false);
   };
 
   const handlePasswordReset = async () => {
@@ -133,8 +149,8 @@ const ProfileForm = ({ onClose }) => {
         <input
           type="text"
           value={username}
-          onChange={(e) => setUsername(e.target.value)}
           style={{ width: '100%', padding: 8, marginTop: 4 }}
+          disabled
         />
       </div>
 
@@ -156,8 +172,9 @@ const ProfileForm = ({ onClose }) => {
         <button
           onClick={handleSave}
           style={{ padding: 10, backgroundColor: '#4CAF50', color: '#fff', border: 'none', cursor: 'pointer' }}
+          disabled={loading}
         >
-          Kaydet
+          {loading ? "Kaydediliyor..." : "Kaydet"}
         </button>
         <button
           onClick={handlePasswordReset}
