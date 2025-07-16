@@ -1,17 +1,39 @@
+// src/App.js
 import React from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import LoginRegisterPage from "./LoginRegisterPage";
 import HomePage from "./HomePage";
+import ForgotPasswordPage from "./ForgotPasswordPage";
+import ProfilePage from "./ProfilePage";
+import Navbar from "./Navbar";
+
+// Navbar'ın bazı sayfalarda görünmemesi için wrapper component
+const LayoutWithNavbar = ({ children }) => {
+  const location = useLocation();
+  const hideNavbarRoutes = ["/login", "/forgot-password"];
+  const hideNavbar = hideNavbarRoutes.includes(location.pathname);
+
+  return (
+    <>
+      {!hideNavbar && <Navbar />}
+      {children}
+    </>
+  );
+};
 
 function App() {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginRegisterPage />} />
-        <Route path="/register" element={<Navigate to="/login" />} /> {/* Opsiyonel yönlendirme */}
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+      <LayoutWithNavbar>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginRegisterPage />} />
+          <Route path="/register" element={<Navigate to="/login" />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </LayoutWithNavbar>
     </Router>
   );
 }
