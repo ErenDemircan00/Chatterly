@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "./firebase";
-import { onAuthStateChanged, signOut } from "firebase/auth";
+import { onAuthStateChanged } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
@@ -24,7 +24,6 @@ function HomePage() {
   return (
     <div style={{ padding: 20 }}>
       <h2>Hoşgeldin, {username}</h2>
-      <button onClick={() => signOut(auth).then(() => navigate("/login"))}>Çıkış Yap</button>
     </div>
   );
 }

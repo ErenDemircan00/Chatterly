@@ -86,7 +86,7 @@ function LoginRegisterPage() {
       setEmail("");
       setPassword("");
       setUsername("");
-      alert("Kayıt başarılı, giriş yapabilirsiniz.");
+      alert("Kayit basarili, giriş yapabilirsiniz.");
     } catch (err) {
       setError(getErrorMessage(err.code));
     }
