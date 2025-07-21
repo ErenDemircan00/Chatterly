@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { auth, db } from "./firebase";
+import { auth, db } from "../firebase/firebase";
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -161,6 +161,11 @@ function LoginRegisterPage() {
       </button>
 
       {!isRegister && <button onClick={handleGoogleLogin}>Google ile Giriş</button>}
+
+
+
+
+
 
       <p>
         {isRegister ? (

@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
-import LoginRegisterPage from "./LoginRegisterPage";
-import HomePage from "./HomePage";
-import ForgotPasswordPage from "./ForgotPasswordPage";
-import ProfilePage from "./ProfilePage";
-import Navbar from "./Navbar";
+import LoginRegisterPage from "./pages/LoginRegisterPage";
+import HomePage from "./pages/HomePage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
+import ProfilePage from "./pages/ProfilePage";
+import Navbar from "./components/Navbar";
 
 const LayoutWithNavbar = ({ children }) => {
   const location = useLocation();

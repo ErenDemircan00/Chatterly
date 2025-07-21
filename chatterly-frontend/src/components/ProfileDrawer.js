@@ -1,8 +1,8 @@
 // src/ProfileDrawer.js
 import React from 'react';
-import './ProfileDrawer.css';
+import '../styles/ProfileDrawer.css';
 import { FaTimes } from 'react-icons/fa';
-import ProfileForm from './ProfileForm';
+import ProfileForm from '../pages/ProfileForm';
 
 const ProfileDrawer = ({ isOpen, onClose }) => {
   return (

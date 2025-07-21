@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { auth, db } from './firebase';
+import { auth, db } from '../firebase/firebase';
 import { doc, getDoc, setDoc, query, collection, where, getDocs } from 'firebase/firestore';
 import { sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
 import { FaPen } from 'react-icons/fa';
