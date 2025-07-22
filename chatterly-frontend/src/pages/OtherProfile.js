@@ -13,6 +13,7 @@ function OtherProfile() {
   const [currentUser, setCurrentUser] = useState(null);
   const [isFriend, setIsFriend] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [requestStatus, setRequestStatus] = useState(''); // '', 'sent', 'pending', 'friends'
 
   // Silinen kullanıcıları friends listesinden otomatik temizle
   useEffect(() => {
@@ -68,26 +69,75 @@ function OtherProfile() {
     fetchUser();
   }, [userId]);
 
-  // Karşılıklı arkadaşlık kontrolü
+  // Karşılıklı arkadaşlık ve istek durumu kontrolü
   useEffect(() => {
     if (currentUser && user) {
       const aktiften = currentUser.friends && currentUser.friends.includes(userId);
       const profilden = user.friends && user.friends.includes(currentUser.username);
-      setIsFriend(aktiften || profilden);
+      if (aktiften && profilden) {
+        setIsFriend(true);
+        setRequestStatus('friends');
+      } else if (user.friendRequests && user.friendRequests.includes(currentUser.username)) {
+        setRequestStatus('sent'); // İstek gönderildi
+      } else if (currentUser.friendRequests && currentUser.friendRequests.includes(userId)) {
+        setRequestStatus('pending'); // Sana istek geldi
+      } else {
+        setIsFriend(false);
+        setRequestStatus('');
+      }
     }
   }, [currentUser, user, userId]);
 
-  const handleAddFriend = async () => {
+  // Arkadaşlık isteği gönder
+  const handleSendRequest = async () => {
     if (!currentUser) return;
     setLoading(true);
     try {
-      const userRef = doc(db, "users", currentUser.username);
-      await updateDoc(userRef, {
-        friends: arrayUnion(userId)
+      await updateDoc(doc(db, "users", userId), {
+        friendRequests: arrayUnion(currentUser.username)
+      });
+      setRequestStatus('sent');
+    } catch (err) {
+      alert("İstek gönderilirken hata oluştu: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // İstek kabul et
+  const handleAcceptRequest = async () => {
+    if (!currentUser) return;
+    setLoading(true);
+    try {
+      // 1. Kendi friends dizine userId'yi ekle, friendRequests'ten çıkar
+      await updateDoc(doc(db, "users", currentUser.username), {
+        friends: arrayUnion(userId),
+        friendRequests: arrayRemove(userId)
+      });
+      // 2. Karşı tarafın friends dizisine kendini ekle
+      await updateDoc(doc(db, "users", userId), {
+        friends: arrayUnion(currentUser.username)
       });
       setIsFriend(true);
+      setRequestStatus('friends');
     } catch (err) {
-      alert("Arkadaş eklenirken hata oluştu: " + err.message);
+      alert("İstek kabul edilirken hata oluştu: " + err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // İstek reddet
+  const handleRejectRequest = async () => {
+    if (!currentUser) return;
+    setLoading(true);
+    try {
+      await updateDoc(doc(db, "users", currentUser.username), {
+        friendRequests: arrayRemove(userId)
+      });
+      setRequestStatus('');
+    } catch (err) {
+      alert("İstek reddedilirken hata oluştu: " + err.message);
     } finally {
       setLoading(false);
     }
@@ -140,22 +190,33 @@ function OtherProfile() {
           <div style={{ color: "#444", marginTop: 4 }}>{description}</div>
         </div>
         {currentUser && currentUser.username !== userId && (
-          <button
-            onClick={handleAddFriend}
-            disabled={isFriend || loading}
-            style={{
-              background: isFriend ? "#aaa" : "#4CAF50",
-              color: "#fff",
-              border: "none",
-              borderRadius: 8,
-              padding: "10px 24px",
-              fontSize: 16,
-              cursor: isFriend ? "not-allowed" : "pointer",
-              marginTop: 12
-            }}
-          >
-            {isFriend ? "Arkadaş" : loading ? "Ekleniyor..." : "Arkadaş Ekle"}
-          </button>
+          <>
+            {requestStatus === 'friends' && (
+              <button disabled style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 16, marginTop: 12 }}>
+                Arkadaş
+              </button>
+            )}
+            {requestStatus === 'sent' && (
+              <button disabled style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 16, marginTop: 12 }}>
+                İstek Gönderildi
+              </button>
+            )}
+            {requestStatus === 'pending' && (
+              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 12 }}>
+                <button onClick={handleAcceptRequest} disabled={loading} style={{ background: '#4CAF50', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 18px', fontSize: 16 }}>
+                  Kabul Et
+                </button>
+                <button onClick={handleRejectRequest} disabled={loading} style={{ background: '#f44336', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 18px', fontSize: 16 }}>
+                  Reddet
+                </button>
+              </div>
+            )}
+            {requestStatus === '' && !isFriend && (
+              <button onClick={handleSendRequest} disabled={loading} style={{ background: '#2196F3', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 16, marginTop: 12 }}>
+                Arkadaşlık İsteği Gönder
+              </button>
+            )}
+          </>
         )}
       </div>
     </div>
