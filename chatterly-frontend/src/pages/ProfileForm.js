@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase/firebase';
-import { doc, getDoc, setDoc, query, collection, where, getDocs } from 'firebase/firestore';
-import { sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
+import { doc, getDoc, setDoc, query, collection, where, getDocs, deleteDoc, updateDoc, arrayRemove } from 'firebase/firestore';
+import { sendPasswordResetEmail, onAuthStateChanged, deleteUser, signOut } from 'firebase/auth';
 import { FaPen } from 'react-icons/fa';
 
 const ProfileForm = ({ onClose }) => {
@@ -189,6 +189,45 @@ const ProfileForm = ({ onClose }) => {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    if (!user) return;
+    if (!window.confirm('Hesabınızı silmek istediğinize emin misiniz? Bu işlem geri alınamaz!')) return;
+    setLoading(true);
+    try {
+      // 1. Firestore'dan kullanıcı dokümanını sil
+      const usersRef = collection(db, 'users');
+      const q = query(usersRef, where('uid', '==', user.uid));
+      const querySnapshot = await getDocs(q);
+      let usernameToDelete = '';
+      if (!querySnapshot.empty) {
+        usernameToDelete = querySnapshot.docs[0].data().username;
+        await deleteDoc(doc(db, 'users', usernameToDelete));
+      }
+
+      // 2. Tüm kullanıcıların friends dizilerinden bu kullanıcıyı sil
+      const allUsersSnap = await getDocs(usersRef);
+      for (const docu of allUsersSnap.docs) {
+        const data = docu.data();
+        if (data.friends && Array.isArray(data.friends) && data.friends.includes(usernameToDelete)) {
+          await updateDoc(doc(db, 'users', data.username), {
+            friends: arrayRemove(usernameToDelete)
+          });
+        }
+      }
+
+      // 3. Firebase Auth'dan kullanıcıyı sil
+      await deleteUser(user);
+
+      // 4. Çıkış yap ve giriş sayfasına yönlendir
+      await signOut(auth);
+      window.location.href = '/login';
+    } catch (error) {
+      alert('Hesap silinirken hata oluştu: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Preview URL temizleme
   useEffect(() => {
     return () => {
@@ -321,6 +360,21 @@ const ProfileForm = ({ onClose }) => {
           disabled={loading}
         >
           Şifreyi Sıfırla
+        </button>
+        <button
+          onClick={handleDeleteAccount}
+          style={{
+            padding: 10,
+            backgroundColor: '#222',
+            color: '#fff',
+            border: 'none',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            borderRadius: 5,
+            fontSize: 16
+          }}
+          disabled={loading}
+        >
+          Hesabı Sil
         </button>
       </div>
     </div>
