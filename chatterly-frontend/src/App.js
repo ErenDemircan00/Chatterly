@@ -4,6 +4,7 @@ import LoginRegisterPage from "./pages/LoginRegisterPage";
 import HomePage from "./pages/HomePage";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ProfilePage from "./pages/ProfilePage";
+import OtherProfile from "./pages/OtherProfile";
 import Navbar from "./components/Navbar";
 
 const LayoutWithNavbar = ({ children }) => {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/register" element={<Navigate to="/login" />} />
           <Route path="/forgot-password" element={<ForgotPasswordPage />} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:userId" element={<OtherProfile />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </LayoutWithNavbar>
