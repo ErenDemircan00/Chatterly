@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase/firebase';
-import { doc, getDoc, setDoc, query, collection, where, getDocs, deleteDoc, updateDoc, arrayRemove } from 'firebase/firestore';
+import { doc, setDoc, query, collection, where, getDocs, deleteDoc, updateDoc, arrayRemove } from 'firebase/firestore';
 import { sendPasswordResetEmail, onAuthStateChanged, deleteUser, signOut } from 'firebase/auth';
 import { FaPen } from 'react-icons/fa';
 

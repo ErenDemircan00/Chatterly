@@ -11,10 +11,6 @@ import {
   setDoc,
   doc,
   getDoc,
-  getDocs,
-  collection,
-  query,
-  where,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
@@ -108,8 +104,8 @@ function LoginRegisterPage() {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      // Google ile gelen kullanıcı username alanı olmadığı için 
-      // kullanıcı adı olarak email öncesi kısım kullanabiliriz:
+
+      
       const usernameFromEmail = user.email.split("@")[0];
 
       const docRef = doc(db, "users", usernameFromEmail);
