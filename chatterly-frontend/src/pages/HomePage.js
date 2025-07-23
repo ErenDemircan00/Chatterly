@@ -19,7 +19,7 @@ function HomePage() {
         navigate("/login");
       }
     });
-  }, []);
+  }, [navigate]);
 
   return (
     <div style={{ padding: 20 }}>
