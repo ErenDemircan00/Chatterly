@@ -12,6 +12,7 @@ import {
   arrayUnion,
   arrayRemove,
   onSnapshot,
+  getDoc,
 } from "firebase/firestore";
 import { FaBell, FaCheck, FaTimes } from "react-icons/fa";
 
@@ -21,6 +22,8 @@ function Navbar() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const [friends, setFriends] = useState([]); // Arkadaşlar listesi
+  const [showFriendsModal, setShowFriendsModal] = useState(false); // Mesaj Gönder modalı
   const navigate = useNavigate();
 
   // Aktif kullanıcıyı ve isteklerini dinle
@@ -46,6 +49,29 @@ function Navbar() {
     });
     return () => unsubscribeAuth();
   }, []);
+
+  // Arkadaş listesini Firestore'dan çek
+  useEffect(() => {
+    const fetchFriends = async () => {
+      if (!currentUser || !currentUser.friends || currentUser.friends.length === 0) {
+        setFriends([]);
+        return;
+      }
+      // Her arkadaşın profilini çek
+      const friendProfiles = await Promise.all(
+        currentUser.friends.map(async (friendUsername) => {
+          const docRef = doc(db, "users", friendUsername);
+          const docSnap = await getDoc(docRef);
+          if (docSnap.exists()) {
+            return { id: docSnap.id, ...docSnap.data() };
+          }
+          return null;
+        })
+      );
+      setFriends(friendProfiles.filter(Boolean));
+    };
+    fetchFriends();
+  }, [currentUser]);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -105,6 +131,16 @@ function Navbar() {
 
   const requests = currentUser?.friendRequests || [];
 
+  // Mesaj Gönder modalını aç/kapat
+  const handleOpenFriendsModal = () => setShowFriendsModal(true);
+  const handleCloseFriendsModal = () => setShowFriendsModal(false);
+
+  // Modalda bir arkadaşa tıklayınca sohbet başlat
+  const handleStartChatWithFriend = (friend) => {
+    setShowFriendsModal(false);
+    navigate(`/chat?user=${friend.username}`);
+  };
+
   return (
     <nav
       style={{
@@ -160,6 +196,50 @@ function Navbar() {
           </ul>
         )}
       </div>
+
+      {/* Mesaj Gönder Butonu (Navbar) */}
+      {currentUser && (
+        <button
+          onClick={handleOpenFriendsModal}
+          style={{ marginLeft: 10, padding: "6px 18px", borderRadius: 8, background: "#1976d2", color: "#fff", border: "none", fontWeight: 600, fontSize: 15, cursor: "pointer" }}
+        >
+          Mesaj Gönder
+        </button>
+      )}
+
+      {/* Mesaj Gönder Modalı */}
+      {showFriendsModal && (
+        <div style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          background: "rgba(0,0,0,0.2)",
+          zIndex: 2000,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center"
+        }}
+          onClick={handleCloseFriendsModal}
+        >
+          <div style={{ background: "#fff", borderRadius: 12, minWidth: 320, maxWidth: 400, padding: 24, boxShadow: "0 4px 24px rgba(0,0,0,0.12)" }} onClick={e => e.stopPropagation()}>
+            <h3 style={{ marginBottom: 16 }}>Arkadaşlarına Mesaj Gönder</h3>
+            {friends.length === 0 ? (
+              <div style={{ color: "#888", textAlign: "center" }}>Hiç arkadaşın yok.</div>
+            ) : (
+              <ul style={{ listStyle: "none", margin: 0, padding: 0 }}>
+                {friends.map(friend => (
+                  <li key={friend.id} style={{ padding: "10px 0", borderBottom: "1px solid #eee", cursor: "pointer" }} onClick={() => handleStartChatWithFriend(friend)}>
+                    <b>@{friend.username}</b> {friend.displayName && <span style={{ color: '#888', marginLeft: 8 }}>{friend.displayName}</span>}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <button onClick={handleCloseFriendsModal} style={{ marginTop: 18, padding: "6px 18px", borderRadius: 8, background: "#eee", color: "#333", border: "none", fontWeight: 600, fontSize: 15, cursor: "pointer" }}>Kapat</button>
+          </div>
+        </div>
+      )}
 
       {/* Bildirimler Alanı */}
       {currentUser && (
