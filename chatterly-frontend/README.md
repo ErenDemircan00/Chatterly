@@ -24,8 +24,6 @@ Aşağıda uygulamanın bazı ekran görüntülerini görebilirsiniz:
 |-------------|-----------|--------|--------|
 | ![Giriş](screenshots/login.png) | ![Ana Sayfa](screenshots/home.png) | ![Sohbet](screenshots/chat.png) | ![Profil](screenshots/profile.png) |
 
-> **Not:** Kendi ekran görüntülerinizi `chatterly-frontend/screenshots/` klasörüne ekleyin ve yukarıdaki tabloyu güncelleyin.
-
 ---
 
 ## 🛠️ Kullanılan Teknolojiler
