@@ -20,10 +20,9 @@ Chatterly, modern, animasyonlu ve kullanıcı dostu bir sohbet platformudur. Kul
 ## 🖼️ Ekran Görüntüleri
 Aşağıda uygulamanın bazı ekran görüntülerini görebilirsiniz:
 
-
 | Giriş/Kayıt | Ana Sayfa | Sohbet | Profil |
 |-------------|-----------|--------|--------|
-| ![Giriş](screenshots/login.png) | ![Ana Sayfa](screenshots/home.png) | ![Sohbet](screenshots/chat.png) | ![Profil](screenshots/profile.png) |
+| ![Giriş](chatterly-frontend/screenshots/login.png) | ![Ana Sayfa](chatterly-frontend/screenshots/home.png) | ![Sohbet](chatterly-frontend/screenshots/chat.png) | ![Profil](chatterly-frontend/screenshots/profile.png) |
 
 ---
 
@@ -70,6 +69,12 @@ npm start
 - Navbar üzerinden kullanıcı arayabilir, arkadaş ekleyebilir ve sohbet başlatabilirsiniz.
 - Profil sayfanızdan bilgilerinizi güncelleyebilirsiniz.
 - Şifrenizi unuttuysanız "Şifremi Unuttum" bağlantısını kullanabilirsiniz.
+
+---
+
+## 💡 Katkıda Bulunma
+- Pull request'ler ve öneriler memnuniyetle karşılanır!
+- Lütfen önce bir issue açarak ne eklemek istediğinizi belirtin.
 
 ---
 
