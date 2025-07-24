@@ -72,11 +72,5 @@ npm start
 
 ---
 
-## 💡 Katkıda Bulunma
-- Pull request'ler ve öneriler memnuniyetle karşılanır!
-- Lütfen önce bir issue açarak ne eklemek istediğinizi belirtin.
-
----
-
 ## 📄 Lisans
 MIT Lisansı
