@@ -1,8 +1,14 @@
 [
   {
     "sender": "eren_0",
+    "to": "berra",
+    "text": "defe",
+    "timestamp": 1753349313797
+  },
+  {
+    "sender": "eren_0",
     "to": "rasim",
-    "text": "Merhaba değerli staj komisyonu başkanım ve üyeleri",
-    "timestamp": 1753281780808
+    "text": "Merhaba değerli Github kullanıcıları umarım projeyi beğenmişsinizdir ve işinize yarayacak bilgiler elde edebilmişsinizdir.",
+    "timestamp": 1753353889510
   }
 ]
