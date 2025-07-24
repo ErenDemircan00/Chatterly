@@ -1,0 +1,197 @@
+/* Sayfa ortalama ve arka plan */
+.dark-bg {
+  background: #181c1f;
+}
+.mouse-light {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  pointer-events: none;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,230,118,0.22) 0%, rgba(0,230,118,0.12) 60%, transparent 100%);
+  filter: blur(32px);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  transition: left 0.12s linear, top 0.12s linear;
+}
+.login-register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(90deg, #181c1f 0%, #181c1f 25%, #00e676 90%, #00e676 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Form kartı */
+.login-register-box {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  padding: 36px 32px;
+  min-width: 320px;
+  max-width: 380px;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Başlık */
+.login-register-box h2 {
+  margin-bottom: 28px;
+  font-weight: 700;
+  font-size: 2.4rem;
+  letter-spacing: 0.05em;
+}
+
+/* Input alanları */
+.login-register-box input {
+  width: 80%;
+  padding: 16px 20px;
+  margin-bottom: 22px;
+  border-radius: 12px;
+  border: 1.5px solid #a5d6a7;
+  font-size: 1.2rem;
+  color: #2e7d32;
+  background-color: #f4fbf7;
+  transition: border-color 0.3s ease;
+  outline-offset: 2px;
+}
+
+.login-register-box input::placeholder {
+  color: #81c784;
+  opacity: 0.8;
+}
+
+.login-register-box input:focus {
+  border-color: #4caf50;
+  background-color: #e8f5e9;
+}
+
+/* Butonlar */
+.login-register-box button {
+  width: 90%;
+  padding: 16px 0;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  background-color: #4caf50;
+  box-shadow: 0 8px 15px rgba(76,175,80,0.35);
+  transition: background-color 0.3s ease, transform 0.15s ease;
+}
+
+.login-register-box button:hover {
+  background-color: #388e3c;
+  transform: scale(1.05);
+}
+
+.login-register-box button:active {
+  transform: scale(0.95);
+}
+
+/* Google butonu farklı renk */
+.login-register-box button:nth-of-type(2) {
+  background-color: #db4437;
+  box-shadow: 0 8px 15px rgba(219,68,55,0.4);
+}
+
+.login-register-box button:nth-of-type(2):hover {
+  background-color: #b33c2e;
+}
+
+/* Alt metinler */
+.login-register-box p {
+  font-size: 1rem;
+  margin-top: 18px;
+  user-select: none;
+}
+
+/* Tıklanabilir linkler */
+.login-register-box p span {
+  color: #388e3c;
+  cursor: pointer;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+
+.login-register-box p span:hover {
+  color: #66bb6a;
+}
+
+/* Hata mesajı */
+.login-register-box p.error {
+  color: #f44336;
+  margin-top: 8px;
+  font-size: 15px;
+}
+
+/* Test kullanıcı metni */
+.login-register-box h1 {
+  font-weight: 600;
+  font-size: 1.15rem;
+  margin: 24px 0 0;
+  font-family: monospace;
+  color: #81c784aa;
+  user-select: text;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  margin-bottom: 18px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border 0.2s;
+}
+.form-input:focus {
+  border: 1.5px solid #00e676;
+}
+.form-button {
+  width: 100%;
+  padding: 12px 0;
+  margin-bottom: 12px;
+  background: #00e676;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.form-button:hover {
+  background: #00c853;
+}
+.form-button.google {
+  background: #fff;
+  color: #333;
+  border: 1px solid #e0e0e0;
+}
+
+.left-light, .right-light {
+  position: absolute;
+  top: 0;
+  width: 320px;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+  filter: blur(60px);
+  opacity: 0.45;
+}
+.left-light {
+  left: -120px;
+  background: radial-gradient(circle at left, #b9f6ca 0%, #00e676 60%, transparent 100%);
+}
+.right-light {
+  right: -120px;
+  background: radial-gradient(circle at right, #b9f6ca 0%, #00e676 60%, transparent 100%);
+}

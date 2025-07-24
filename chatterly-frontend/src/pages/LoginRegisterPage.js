@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { auth, db } from "../firebase/firebase";
+import "../styles/LoginRegisterPage.css"
 import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
@@ -43,6 +44,20 @@ function LoginRegisterPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const provider = new GoogleAuthProvider();
+  const [lightPos, setLightPos] = useState({ x: 50, y: 50 });
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const container = document.querySelector('.login-register-container');
+      if (!container) return;
+      const rect = container.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      setLightPos({ x, y });
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
 
   const checkUsernameExists = async (username) => {
     const docRef = doc(db, "users", username);
@@ -129,68 +144,60 @@ function LoginRegisterPage() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>{isRegister ? "Kayıt Ol" : "Giriş Yap"}</h2>
-
-      {isRegister && (
-        <input
-          placeholder="Kullanıcı Adı"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-        />
-      )}
-      <input
-        placeholder="E-posta"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        type="email"
+    <div className="login-register-container dark-bg">
+      <div
+        className="mouse-light"
+        style={{
+          left: `${lightPos.x}%`,
+          top: `${lightPos.y}%`,
+        }}
       />
-      <input
-        placeholder="Şifre"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        type="password"
-      />
-
-      <button onClick={isRegister ? handleRegister : handleLogin}>
-        {isRegister ? "Kayıt Ol" : "Giriş Yap"}
-      </button>
-
-      {!isRegister && <button onClick={handleGoogleLogin}>Google ile Giriş</button>}
-
-
-
-
-
-
-      <p>
-        {isRegister ? (
-          <>
-            Zaten hesabın var mı?{" "}
-            <span style={{ color: "blue", cursor: "pointer" }} onClick={() => setIsRegister(false)}>
-              Giriş Yap
-            </span>
-          </>
-        ) : (
-          <>
-            Hesabın yok mu?{" "}
-            <span style={{ color: "blue", cursor: "pointer" }} onClick={() => setIsRegister(true)}>
-              Kayıt Ol
-            </span>
-          </>
+      <div className="login-register-box">
+        <h2>{isRegister ? "Kayıt Ol" : "Giriş Yap"}</h2>
+        {isRegister && (
+          <input
+            className="form-input"
+            placeholder="Kullanıcı Adı"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
         )}
-      </p>
-
-      <p style={{ marginTop: "10px" }}>
-        <span
-          style={{ color: "blue", cursor: "pointer" }}
-          onClick={() => navigate("/forgot-password")}
-        >
-          Şifremi Unuttum
-        </span>
-      </p>
-
-      {error && <p style={{ color: "red" }}>{error}</p>}
+        <input
+          className="form-input"
+          placeholder="E-posta"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          type="email"
+        />
+        <input
+          className="form-input"
+          placeholder="Şifre"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          type="password"
+        />
+        <button className="form-button" onClick={isRegister ? handleRegister : handleLogin}>
+          {isRegister ? "Kayıt Ol" : "Giriş Yap"}
+        </button>
+        {!isRegister && <button className="form-button google" onClick={handleGoogleLogin}>Google ile Giriş</button>}
+        <p>
+          {isRegister ? (
+            <>
+              Zaten hesabın var mı?{" "}
+              <span onClick={() => setIsRegister(false)}>Giriş Yap</span>
+            </>
+          ) : (
+            <>
+              Hesabın yok mu?{" "}
+              <span onClick={() => setIsRegister(true)}>Kayıt Ol</span>
+            </>
+          )}
+        </p>
+        <p style={{ marginTop: "10px" }}>
+          <span onClick={() => navigate("/forgot-password")}>Şifremi Unuttum</span>
+        </p>
+        {error && <p className="error">{error}</p>}
+      </div>
     </div>
   );
 }

@@ -152,72 +152,46 @@ function OtherProfile() {
   const profileImage = (user.photoURL && user.photoURL.trim() !== "") ? user.photoURL : placeholderImg;
 
   return (
-    <div style={{
-      minHeight: "80vh",
-      display: "flex",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "#f5f6fa"
-    }}>
-      <div style={{
-        background: "#fff",
-        borderRadius: 16,
-        boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
-        padding: 36,
-        minWidth: 320,
-        maxWidth: 380,
-        width: "100%",
-        textAlign: "center"
-      }}>
-        <div style={{ marginBottom: 20 }}>
+    <div className="other-profile-page green-bg-animated">
+      {/* Hareketli soft yeşil arka plan baloncukları */}
+      <div className="profile-bubbles">
+        {[...Array(8)].map((_, i) => (
+          <div key={i} className={`profile-bubble bubble${i + 1}`} />
+        ))}
+      </div>
+      <div className="other-profile-box soft-glass">
+        <div className="profile-photo-wrapper" style={{ marginBottom: 20 }}>
           <img
             src={profileImage}
             alt="Profil"
-            width={140}
-            height={140}
-            style={{
-              borderRadius: "50%",
-              objectFit: "cover",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.10)",
-              border: "4px solid #f5f6fa"
-            }}
+            className="profile-photo"
+            width={120}
+            height={120}
           />
         </div>
-        <h2 style={{ margin: "10px 0 4px 0", fontWeight: 700, fontSize: 26 }}>{username} </h2>
-        <div style={{ color: "#888", fontSize: 15, marginBottom: 18 }}>{fullname}</div>
-        <div style={{ marginBottom: 16 }}>
-          <strong>Açıklama:</strong>
-          <div style={{ color: "#444", marginTop: 4 }}>{description}</div>
+        <div className="username-display" style={{ fontWeight: 700, fontSize: 22, marginBottom: 4, color: '#1b5e20' }}>@{username}</div>
+        <div style={{ color: "#388e3c", fontSize: 15, marginBottom: 12 }}>{fullname}</div>
+        <div style={{ marginBottom: 18, background: "rgba(232, 245, 233, 0.7)", borderRadius: 8, padding: 12 }}>
+          <strong style={{ color: "#388e3c" }}>Açıklama:</strong>
+          <div style={{ color: "#222", marginTop: 4, fontSize: 15 }}>{description}</div>
         </div>
-        {currentUser && currentUser.username !== userId && (
-          <>
-            {requestStatus === 'friends' && (
-              <button disabled style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 16, marginTop: 12 }}>
-                Arkadaş
-              </button>
-            )}
-            {requestStatus === 'sent' && (
-              <button disabled style={{ background: '#aaa', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 16, marginTop: 12 }}>
-                İstek Gönderildi
-              </button>
-            )}
-            {requestStatus === 'pending' && (
-              <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 12 }}>
-                <button onClick={handleAcceptRequest} disabled={loading} style={{ background: '#4CAF50', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 18px', fontSize: 16 }}>
-                  Kabul Et
-                </button>
-                <button onClick={handleRejectRequest} disabled={loading} style={{ background: '#f44336', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 18px', fontSize: 16 }}>
-                  Reddet
-                </button>
-              </div>
-            )}
-            {requestStatus === '' && !isFriend && (
-              <button onClick={handleSendRequest} disabled={loading} style={{ background: '#2196F3', color: '#fff', border: 'none', borderRadius: 8, padding: '10px 24px', fontSize: 16, marginTop: 12 }}>
-                Arkadaşlık İsteği Gönder
-              </button>
-            )}
-          </>
-        )}
+        <div style={{ marginTop: 18 }}>
+          {requestStatus === 'friends' && (
+            <button disabled className="btn friend-btn">Arkadaş</button>
+          )}
+          {requestStatus === 'sent' && (
+            <button disabled className="btn sent-btn">İstek Gönderildi</button>
+          )}
+          {requestStatus === 'pending' && (
+            <div style={{ display: 'flex', gap: 8, justifyContent: 'center', marginTop: 12 }}>
+              <button onClick={handleAcceptRequest} disabled={loading} className="btn accept-btn">Kabul Et</button>
+              <button onClick={handleRejectRequest} disabled={loading} className="btn reject-btn">Reddet</button>
+            </div>
+          )}
+          {requestStatus === '' && !isFriend && (
+            <button onClick={handleSendRequest} disabled={loading} className="btn send-btn">Arkadaşlık İsteği Gönder</button>
+          )}
+        </div>
       </div>
     </div>
   );

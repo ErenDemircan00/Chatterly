@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { auth, db } from '../firebase/firebase';
-import { doc, setDoc, query, collection, where, getDocs, deleteDoc, updateDoc, arrayRemove } from 'firebase/firestore';
-import { sendPasswordResetEmail, onAuthStateChanged, deleteUser, signOut } from 'firebase/auth';
+import {
+  doc, setDoc, query, collection, where, getDocs, deleteDoc, updateDoc, arrayRemove
+} from 'firebase/firestore';
+import {
+  sendPasswordResetEmail, onAuthStateChanged, deleteUser, signOut
+} from 'firebase/auth';
 import { FaPen } from 'react-icons/fa';
+import '../styles/ProfileForm.css';  
 
 const ProfileForm = ({ onClose }) => {
   const [user, setUser] = useState(null);
@@ -23,7 +28,6 @@ const ProfileForm = ({ onClose }) => {
         resetForm();
       }
     });
-
     return () => unsubscribe();
   }, []);
 
@@ -66,11 +70,10 @@ const ProfileForm = ({ onClose }) => {
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
       const img = new Image();
-      
+
       img.onload = () => {
-        // Boyutları hesapla
         let { width, height } = img;
-        
+
         if (width > height) {
           if (width > maxWidth) {
             height = (height * maxWidth) / width;
@@ -82,18 +85,14 @@ const ProfileForm = ({ onClose }) => {
             height = maxHeight;
           }
         }
-        
+
         canvas.width = width;
         canvas.height = height;
-        
-        // Resmi çiz
         ctx.drawImage(img, 0, 0, width, height);
-        
-        // Base64 string al
         const base64String = canvas.toDataURL('image/jpeg', quality);
         resolve(base64String);
       };
-      
+
       img.src = URL.createObjectURL(file);
     });
   };
@@ -109,13 +108,9 @@ const ProfileForm = ({ onClose }) => {
 
     try {
       setLoading(true);
-      
-      // Resmi küçült ve base64'e çevir
       const base64Image = await resizeAndConvertToBase64(file, 300, 300, 0.7);
-      
       setPhotoFile(base64Image);
       setPreviewURL(base64Image);
-      
     } catch (error) {
       alert('Resim işlenirken hata oluştu.');
       console.error(error);
@@ -142,7 +137,6 @@ const ProfileForm = ({ onClose }) => {
 
     setLoading(true);
     try {
-      // Yeni fotoğraf seçildiyse onu kullan, yoksa eski URL'i koru
       const finalPhotoURL = photoFile || photoURL;
 
       await setDoc(
@@ -159,13 +153,12 @@ const ProfileForm = ({ onClose }) => {
         { merge: true }
       );
 
-      // State'leri güncelle
       setPhotoURL(finalPhotoURL);
       resetFileInputs();
 
       alert('Profil başarıyla güncellendi!');
       if (onClose) onClose();
-      
+
     } catch (error) {
       console.error('Profil kaydı hatası:', error);
       alert('Profil güncellenemedi: ' + error.message);
@@ -194,7 +187,6 @@ const ProfileForm = ({ onClose }) => {
     if (!window.confirm('Hesabınızı silmek istediğinize emin misiniz? Bu işlem geri alınamaz!')) return;
     setLoading(true);
     try {
-      // 1. Firestore'dan kullanıcı dokümanını sil
       const usersRef = collection(db, 'users');
       const q = query(usersRef, where('uid', '==', user.uid));
       const querySnapshot = await getDocs(q);
@@ -204,7 +196,6 @@ const ProfileForm = ({ onClose }) => {
         await deleteDoc(doc(db, 'users', usernameToDelete));
       }
 
-      // 2. Tüm kullanıcıların friends dizilerinden bu kullanıcıyı sil
       const allUsersSnap = await getDocs(usersRef);
       for (const docu of allUsersSnap.docs) {
         const data = docu.data();
@@ -215,10 +206,7 @@ const ProfileForm = ({ onClose }) => {
         }
       }
 
-      // 3. Firebase Auth'dan kullanıcıyı sil
       await deleteUser(user);
-
-      // 4. Çıkış yap ve giriş sayfasına yönlendir
       await signOut(auth);
       window.location.href = '/login';
     } catch (error) {
@@ -228,7 +216,6 @@ const ProfileForm = ({ onClose }) => {
     }
   };
 
-  // Preview URL temizleme
   useEffect(() => {
     return () => {
       if (previewURL && previewURL.startsWith('blob:')) {
@@ -238,145 +225,87 @@ const ProfileForm = ({ onClose }) => {
   }, [previewURL]);
 
   return (
-    <div style={{ padding: 20, fontFamily: 'Arial, sans-serif', maxWidth: 400, margin: '0 auto' }}>
-      <div style={{ textAlign: 'center', marginBottom: 20, position: 'relative' }}>
-        <div style={{ position: 'relative', display: 'inline-block' }}>
-          <img
-            src={previewURL || photoURL || 'https://www.w3schools.com/w3images/avatar2.png'}
-            alt="Profil"
-            style={{
-              width: 120,
-              height: 120,
-              borderRadius: '50%',
-              objectFit: 'cover',
-              border: '2px solid #4CAF50'
-            }}
-            onError={(e) => {
-              e.target.src = 'https://www.w3schools.com/w3images/avatar2.png';
-            }}
-          />
-          <label
-            htmlFor="photo-upload"
-            style={{
-              position: 'absolute',
-              bottom: 5,
-              right: 5,
-              backgroundColor: '#fff',
-              borderRadius: '50%',
-              padding: 6,
-              cursor: loading ? 'not-allowed' : 'pointer',
-              boxShadow: '0 0 4px rgba(0,0,0,0.3)',
-            }}
-            title="Profil fotoğrafını değiştir"
-          >
-            <FaPen size={14} />
-          </label>
-        </div>
+    <div className="profile-form">
+      <div className="profile-photo-wrapper">
+        <img
+          src={previewURL || photoURL || 'https://www.w3schools.com/w3images/avatar2.png'}
+          alt="Profil"
+          className="profile-photo"
+          onError={(e) => {
+            e.target.src = 'https://www.w3schools.com/w3images/avatar2.png';
+          }}
+        />
+        <label
+          htmlFor="photo-upload"
+          className={`photo-upload-label ${loading ? 'disabled' : ''}`}
+          title="Profil fotoğrafını değiştir"
+        >
+          <FaPen size={16} />
+        </label>
         <input
           id="photo-upload"
           type="file"
           accept="image/*"
           onChange={handlePhotoChange}
-          style={{ display: 'none' }}
           disabled={loading}
-        />
-        
-        <div style={{ fontWeight: 'bold', fontSize: 18, marginTop: 10 }}>
-          @{username || 'kullanici'}
-        </div>
-      </div>
-
-      <div style={{ marginBottom: 15 }}>
-        <label>Ad Soyad: <span style={{ color: 'red' }}>*</span></label>
-        <input
-          type="text"
-          value={displayName}
-          onChange={(e) => setDisplayName(e.target.value)}
-          style={{ width: '100%', padding: 8, marginTop: 4 }}
-          maxLength={50}
-          required
-          disabled={loading}
+          className="photo-upload-input"
         />
       </div>
 
-      <div style={{ marginBottom: 15 }}>
-        <label>Kullanıcı Adı:</label>
-        <input
-          type="text"
-          value={username}
-          style={{ 
-            width: '100%', 
-            padding: 8, 
-            marginTop: 4, 
-            backgroundColor: '#f5f5f5' 
-          }}
-          disabled
-        />
-      </div>
+      <div className="username-display">@{username || 'kullanici'}</div>
 
-      <div style={{ marginBottom: 15 }}>
-        <label>Açıklama:</label>
-        <textarea
-          value={bio}
-          onChange={(e) => setBio(e.target.value)}
-          style={{ width: '100%', padding: 8, marginTop: 4, minHeight: 60 }}
-          maxLength={200}
-          placeholder="Kendinizi tanıtın..."
-          disabled={loading}
-        />
-        <small style={{ color: '#666' }}>
-          {bio.length}/200 karakter
-        </small>
-      </div>
+      <label>Ad Soyad <span className="required">*</span></label>
+      <input
+        type="text"
+        value={displayName}
+        onChange={(e) => setDisplayName(e.target.value)}
+        maxLength={50}
+        disabled={loading}
+        className="form-input"
+      />
 
-      <div style={{ marginTop: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
-        <button
-          onClick={handleSave}
-          style={{ 
-            padding: 10, 
-            backgroundColor: loading ? '#ccc' : '#4CAF50', 
-            color: '#fff', 
-            border: 'none', 
-            cursor: loading ? 'not-allowed' : 'pointer',
-            borderRadius: 5,
-            fontSize: 16
-          }}
-          disabled={loading}
-        >
-          {loading ? "İşleniyor..." : "Kaydet"}
-        </button>
-        
-        <button
-          onClick={handlePasswordReset}
-          style={{ 
-            padding: 10, 
-            backgroundColor: '#f44336', 
-            color: '#fff', 
-            border: 'none', 
-            cursor: loading ? 'not-allowed' : 'pointer',
-            borderRadius: 5,
-            fontSize: 16
-          }}
-          disabled={loading}
-        >
-          Şifreyi Sıfırla
-        </button>
-        <button
-          onClick={handleDeleteAccount}
-          style={{
-            padding: 10,
-            backgroundColor: '#222',
-            color: '#fff',
-            border: 'none',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            borderRadius: 5,
-            fontSize: 16
-          }}
-          disabled={loading}
-        >
-          Hesabı Sil
-        </button>
-      </div>
+      <label>Kullanıcı Adı</label>
+      <input
+        type="text"
+        value={username}
+        disabled
+        className="form-input disabled-input"
+      />
+
+      <label>Açıklama</label>
+      <textarea
+        value={bio}
+        onChange={(e) => setBio(e.target.value)}
+        maxLength={200}
+        placeholder="Kendinizi tanıtın..."
+        disabled={loading}
+        className="form-input"
+      />
+      <small className="bio-counter">{bio.length}/200 karakter</small>
+
+      <button
+        className="btn save-btn"
+        onClick={handleSave}
+        disabled={loading}
+      >
+        {loading ? "İşleniyor..." : "Kaydet"}
+      </button>
+
+      <button
+        className="btn reset-btn"
+        onClick={handlePasswordReset}
+        disabled={loading}
+      >
+        Şifreyi Sıfırla
+      </button>
+
+      <button
+        className="btn delete-btn"
+        onClick={handleDeleteAccount}
+        disabled={loading}
+      >
+        Hesabı Sil
+      </button>
     </div>
   );
 };

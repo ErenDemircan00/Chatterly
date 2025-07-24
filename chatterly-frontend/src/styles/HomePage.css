@@ -1,0 +1,247 @@
+.homepage {
+  position: relative;
+  min-height: 100vh;
+  background: #113922;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  overflow: hidden;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #d4f1d4;
+  text-align: center;
+}
+
+/* Işık hüzmeleri - yumuşak animasyonlu */
+.background-lights {
+  position: absolute;
+  top: -100px;
+  left: -100px;
+  width: 700px;
+  height: 700px;
+  background:
+    radial-gradient(circle at 40% 40%, rgba(105, 190, 80, 0.25), transparent 80%),
+    radial-gradient(circle at 65% 65%, rgba(60, 140, 60, 0.15), transparent 80%);
+  filter: blur(100px);
+  animation: glowPulse 7s ease-in-out infinite;
+  z-index: 0;
+}
+
+/* Baloncukların kapsayıcısı */
+.bubbles-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Baloncuklar genel stili */
+.bubble {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  filter: drop-shadow(0 0 2px rgba(120, 200, 120, 0.5));
+}
+
+/* Her baloncuk farklı boyut, renk ve animasyon süresi */
+.bubble1 {
+  width: 40px;
+  height: 40px;
+  background: rgba(72, 187, 120, 0.25);
+  top: 10%;
+  left: 15%;
+  animation: floatUpDown 6s ease-in-out infinite;
+  animation-delay: 0s;
+}
+.bubble2 {
+  width: 25px;
+  height: 25px;
+  background: rgba(90, 220, 140, 0.2);
+  top: 60%;
+  left: 10%;
+  animation: floatUpDown 7.5s ease-in-out infinite;
+  animation-delay: 2s;
+}
+.bubble3 {
+  width: 50px;
+  height: 50px;
+  background: rgba(60, 180, 90, 0.15);
+  top: 80%;
+  left: 30%;
+  animation: floatUpDown 8s ease-in-out infinite;
+  animation-delay: 3.5s;
+}
+.bubble4 {
+  width: 20px;
+  height: 20px;
+  background: rgba(100, 230, 160, 0.3);
+  top: 45%;
+  left: 50%;
+  animation: floatUpDown 6.5s ease-in-out infinite;
+  animation-delay: 4s;
+}
+.bubble5 {
+  width: 35px;
+  height: 35px;
+  background: rgba(55, 165, 70, 0.18);
+  top: 70%;
+  left: 55%;
+  animation: floatUpDown 7.8s ease-in-out infinite;
+  animation-delay: 1s;
+}
+.bubble6 {
+  width: 60px;
+  height: 60px;
+  background: rgba(40, 120, 55, 0.2);
+  top: 20%;
+  left: 70%;
+  animation: floatUpDown 9s ease-in-out infinite;
+  animation-delay: 5s;
+}
+.bubble7 {
+  width: 30px;
+  height: 30px;
+  background: rgba(65, 175, 85, 0.22);
+  top: 35%;
+  left: 75%;
+  animation: floatUpDown 7s ease-in-out infinite;
+  animation-delay: 6s;
+}
+.bubble8 {
+  width: 45px;
+  height: 45px;
+  background: rgba(80, 190, 100, 0.2);
+  top: 15%;
+  left: 80%;
+  animation: floatUpDown 6.8s ease-in-out infinite;
+  animation-delay: 7s;
+}
+.bubble9 {
+  width: 28px;
+  height: 28px;
+  background: rgba(90, 210, 130, 0.18);
+  top: 50%;
+  left: 85%;
+  animation: floatUpDown 8.5s ease-in-out infinite;
+  animation-delay: 7.5s;
+}
+.bubble10 {
+  width: 33px;
+  height: 33px;
+  background: rgba(75, 195, 110, 0.17);
+  top: 40%;
+  left: 90%;
+  animation: floatUpDown 9.2s ease-in-out infinite;
+  animation-delay: 8s;
+}
+.bubble11 {
+  width: 22px;
+  height: 22px;
+  background: rgba(100, 230, 160, 0.3);
+  top: 60%;
+  left: 80%;
+  animation: floatUpDown 6.2s ease-in-out infinite;
+  animation-delay: 8.5s;
+}
+.bubble12 {
+  width: 18px;
+  height: 18px;
+  background: rgba(65, 175, 85, 0.22);
+  top: 25%;
+  left: 40%;
+  animation: floatUpDown 7.7s ease-in-out infinite;
+  animation-delay: 4.2s;
+}
+.bubble13 {
+  width: 40px;
+  height: 40px;
+  background: rgba(90, 210, 130, 0.18);
+  top: 30%;
+  left: 20%;
+  animation: floatUpDown 8.1s ease-in-out infinite;
+  animation-delay: 5.7s;
+}
+.bubble14 {
+  width: 25px;
+  height: 25px;
+  background: rgba(80, 190, 100, 0.2);
+  top: 75%;
+  left: 35%;
+  animation: floatUpDown 7.9s ease-in-out infinite;
+  animation-delay: 2.3s;
+}
+.bubble15 {
+  width: 15px;
+  height: 15px;
+  background: rgba(40, 120, 55, 0.2);
+  top: 55%;
+  left: 75%;
+  animation: floatUpDown 9.1s ease-in-out infinite;
+  animation-delay: 3.3s;
+}
+
+/* Baloncuk yukarı aşağı yumuşak hareket animasyonu */
+@keyframes floatUpDown {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.25;
+  }
+  50% {
+    transform: translateY(-20px);
+    opacity: 0.5;
+  }
+}
+
+/* Işık hüzmesi pulsasyonu */
+@keyframes glowPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.07);
+    opacity: 0.65;
+  }
+}
+
+/* Karşılama kutusu */
+.welcome-box {
+  position: relative;
+  background: rgba(30, 70, 30, 0.75);
+  padding: 50px 40px;
+  border-radius: 20px;
+  box-shadow: 0 0 30px rgba(80, 180, 80, 0.6);
+  max-width: 450px;
+  width: 100%;
+  z-index: 1;
+}
+
+/* Başlık */
+.welcome-box h1 {
+  font-size: 2.8rem;
+  margin-bottom: 20px;
+  font-weight: 900;
+  color: #b4e2a4;
+  text-shadow: 0 0 6px #98d06f;
+}
+
+/* Kullanıcı adı özel renk */
+.username {
+  color: #def0c2;
+  font-style: italic;
+  text-shadow: 0 0 4px #a6d56a;
+}
+
+/* Alt metin */
+.welcome-box p {
+  font-size: 1.2rem;
+  color: #a8dba8;
+  font-weight: 600;
+  text-shadow: 0 0 2px #7cb970;
+}

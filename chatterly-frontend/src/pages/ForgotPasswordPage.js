@@ -1,8 +1,9 @@
-// src/ForgotPasswordPage.js
 import React, { useState } from "react";
 import { auth } from "../firebase/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+
+import "../styles/ForgotPasswordPage.css";
 
 function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
@@ -34,19 +35,26 @@ function ForgotPasswordPage() {
   };
 
   return (
-    <div style={{ padding: 20 }}>
-      <h2>Şifremi Unuttum</h2>
-      <input
-        type="email"
-        placeholder="E-posta adresiniz"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <button onClick={handleReset}>Şifre Sıfırlama Maili Gönder</button>
-      <br />
-      <button onClick={() => navigate("/login")}>Girişe Dön</button>
-      {message && <p style={{ color: "green" }}>{message}</p>}
-      {error && <p style={{ color: "red" }}>{error}</p>}
+    <div className="forgot-password-page">
+      <div className="background-animations" />
+      <div className="container forgot-password-box">
+        <h2 className="title">Şifre Sıfırlama</h2>
+        <input
+          type="email"
+          placeholder="E-posta adresiniz"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="form-input"
+        />
+        <button onClick={handleReset} className="form-button">
+          Şifre Sıfırlama Linki Gönder
+        </button>
+        <button onClick={() => navigate("/login")} className="form-button google">
+          Giriş ekranına dön
+        </button>
+        {message && <p className="message success">{message}</p>}
+        {error && <p className="message error">{error}</p>}
+      </div>
     </div>
   );
 }
